@@ -1,10 +1,5 @@
 module Utils where
 
--- import Data.List (sortBy)
--- import Data.Function (on)
--- import Control.Monad (join)
--- import qualified XMonad.StackSet as W
-
 import System.Posix.Unistd (nodeName, getSystemID)
 
 import XMonad
@@ -22,16 +17,18 @@ startupHook' = do
         safeRunInTerm "" "calcurse"
         -- TODO: safeSpawn "mkfifo" or spawnPipe $ "/tmp/.xmonad-workspace-log"
 
--- polybarHook = do
---   winset <- gets windowset
---   let currWs = W.currentTag winset
---   let wss = map W.tag $ W.workspaces winset
---   let wsStr = join $ map (fmt currWs) $ sort' wss
---   io $ appendFile "/tmp/.xmonad-workspace-log" (wsStr ++ "\n")
---   where fmt currWs ws
---           | currWs == ws = "[" ++ ws ++ "]"
---           | otherwise    = " " ++ ws ++ " "
---         sort' = sortBy (compare `on` (!! 0))
+{-
+   polybarHook = do
+     winset <- gets windowset
+     let currWs = W.currentTag winset
+     let wss = map W.tag $ W.workspaces winset
+     let wsStr = join $ map (fmt currWs) $ sort' wss
+     io $ appendFile "/tmp/.xmonad-workspace-log" (wsStr ++ "\n")
+     where fmt currWs ws
+             | currWs == ws = "[" ++ ws ++ "]"
+             | otherwise    = " " ++ ws ++ " "
+           sort' = sortBy (compare `on` (!! 0))
+-}
 
 
 tabLayoutTheme = def
