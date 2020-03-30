@@ -5,7 +5,7 @@ import System.Posix.Unistd (nodeName, getSystemID)
 import XMonad
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.Run (safeRunInTerm)
-import XMonad.Actions.Eval (evalExpression, defaultEvalConfig)
+-- import XMonad.Actions.Eval (evalExpression, defaultEvalConfig)
 import XMonad.Prompt.Input (inputPrompt)
 
 import XMonad.Layout.Tabbed
@@ -44,4 +44,4 @@ tabLayoutTheme = def
         , fontName = "xft:Hasklig:size=10:antialias=true"
         }
 
-hsPrompt = inputPrompt def "Eval" >>= flip whenJust (evalExpression defaultEvalConfig)
+-- hsPrompt = inputPrompt def "Eval" >>= flip whenJust (evalExpression defaultEvalConfig)

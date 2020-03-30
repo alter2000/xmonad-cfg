@@ -12,9 +12,9 @@ import XMonad.StackSet (shift
 import XMonad.Util.Scratchpad (scratchpadManageHook)
 import XMonad.Actions.PhysicalScreens
 
+manageHook' :: ManageHook
 manageHook' = composeAll . concat $
-    [
-      [ className =? w --> viewShift "ffox" | w <- ffoxShiftC ]
+    [ [ className =? w --> viewShift "ffox" | w <- ffoxShiftC ]
     , [ className =? w --> viewShift "term" | w <- termShiftC ]
     , [ className =? w --> doFloat | w <- floatsC ]
     , [ resource  =? w --> doFloat | w <- floatsI ]
@@ -39,6 +39,7 @@ manageHook' = composeAll . concat $
                    , ("Firefox", "Plugin-container")
                    ]
 
+dropdownTerminal :: ManageHook
 dropdownTerminal = scratchpadManageHook $ RationalRect tLeftPC tTopPC tWidthPC tHeightPC
     where
         tHeightPC = 0.4

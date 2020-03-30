@@ -1,7 +1,9 @@
-module Keys where
+module Keys (
+    keys'
+  ) where
 
 import System.Exit (exitWith, ExitCode(ExitSuccess))
-import Data.Map (fromList)
+import Data.Map (Map, fromList)
 
 import XMonad
 import XMonad.Actions.PhysicalScreens (viewScreen, sendToScreen)
@@ -16,6 +18,7 @@ import XMonad.Util.CustomKeys (customKeys)
 
 -- import Utils (hsPrompt)
 
+keys' :: XConfig Layout -> Map (KeyMask, KeySym) (X ())
 keys' = customKeys del ins
         where
           ins conf@(XConfig { modMask = mm }) =

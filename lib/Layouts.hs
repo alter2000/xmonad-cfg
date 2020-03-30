@@ -1,4 +1,6 @@
-module Layouts where
+module Layouts (
+    layoutHook'
+  ) where
 -- TODO: maybe add layouts as <leader> maps?
 
 import XMonad
@@ -32,6 +34,6 @@ tilingL = windowArrange ( gaps [(U, 22), (R, 0), (L, 0), (D, 0)] $
 fullL = noBorders $ fullscreenFull Full
 
 scratchpads = [
-              NS "gvim" "gvim" (className =? "Gvim")
-                      (customFloating $ RationalRect (1/3) (4/5) (1/3) (1/3))
-            ]
+    NS "gvim" "gvim" (className =? "Gvim")
+        (customFloating $ RationalRect (1/3) (4/5) (1/3) (1/3))
+  ]
