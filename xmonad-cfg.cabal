@@ -32,7 +32,7 @@ library
   other-modules:
       Paths_xmonad_cfg
   hs-source-dirs:
-      src
+      lib
   build-depends:
       base >=4.7 && <5
     , containers
