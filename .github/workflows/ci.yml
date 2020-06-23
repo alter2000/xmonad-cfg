@@ -15,7 +15,7 @@ jobs:
       - uses: cachix/install-nix-action@v10
         with:
           nix_path: nixpkgs=channel:nixos
-      - run: nix-build
+      - run: nix-build ./nix/default.nix
       - uses: actions/upload-artifact@v1
         with:
           name: xmonad-${{ runner.os }}
