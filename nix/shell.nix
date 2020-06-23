@@ -1,11 +1,11 @@
 { pkgs ? import <nixpkgs> {}
-, compiler ? "ghc881"
+, compiler ? "ghc883"
 }:
 
 pkgs.mkShell {
   buildInputs =
     with pkgs.haskell.packages.${compiler};
-    [ stack
+    [ (import ./default.nix {})
       # ghcide
     ];
 }
