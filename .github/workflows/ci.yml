@@ -20,3 +20,15 @@ jobs:
         with:
           name: xmonad-${{ runner.os }}
           path: package
+
+      # TODO: use haskell.nix
+      # https://gist.github.com/domenkozar/42311c302da74c10089a8ac28afd7bbc
+      # - uses: cachix/install-nix-action@v10
+      #   with:
+      #     skip_adding_nixpkgs_channel: true
+      # - uses: cachix/cachix-action@v6
+      #   with:
+      #     name: mycache
+      #     signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+      # - run: cachix use iohk
+      # - run: nix-build -A mypackage.components.all
