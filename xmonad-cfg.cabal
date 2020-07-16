@@ -1,20 +1,14 @@
-cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.33.0.
---
--- see: https://github.com/sol/hpack
---
--- hash: b62bb7df9c2e10fa70324d1f8a0046f80da2b2bb288b0578f5e332132d28ffaa
+cabal-version: 3.0
 
 name:           xmonad-cfg
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/alter2000/xmonad-cfg#readme>
+description:    My personal XMonad config
 homepage:       https://github.com/alter2000/xmonad-cfg#readme
 bug-reports:    https://github.com/alter2000/xmonad-cfg/issues
 author:         Jor Bashllari
 maintainer:     altnate2000@gmail.com
 copyright:      me
-license:        BSD3
+license:        BSD-3-Clause
 build-type:     Simple
 extra-source-files:
     README.md
@@ -23,53 +17,25 @@ source-repository head
   type: git
   location: https://github.com/alter2000/xmonad-cfg
 
-library
-  exposed-modules:
-      Keys
-      Layouts
-      Utils
-      WSRules
-  other-modules:
-      Paths_xmonad_cfg
-  hs-source-dirs:
-      lib
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , unix
-    , xmonad
-    , xmonad-contrib
-  default-language: Haskell2010
-
 executable xmonad
   main-is: Main.hs
   other-modules:
-      Paths_xmonad_cfg
-  hs-source-dirs:
-      app
+      Keys
+    , Layouts
+    , Utils
+    , WSRules
+  hs-source-dirs: app, lib
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , async
     , containers
+    -- , process
     , unix
     , xmonad
-    , xmonad-cfg
     , xmonad-contrib
+    , X11
   default-language: Haskell2010
-
-test-suite xmonad-cfg-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
-  other-modules:
-      Paths_xmonad_cfg
-  hs-source-dirs:
-      test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , unix
-    , xmonad
-    , xmonad-cfg
-    , xmonad-contrib
-  default-language: Haskell2010
+  default-extensions:
+      ScopedTypeVariables
+    , BlockArguments

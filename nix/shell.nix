@@ -5,7 +5,7 @@
 pkgs.mkShell {
   buildInputs =
     with pkgs.haskell.packages.${compiler};
-    [ (import ./default.nix {})
+    [ (import ./default.nix { inherit compiler; })
       # ghcide
     ];
 }
