@@ -14,35 +14,35 @@ import XMonad.Actions.PhysicalScreens
 
 manageHook' :: ManageHook
 manageHook' = composeAll . concat $
-    [ [ className =? w --> viewShift "ffox" | w <- ffoxShiftC ]
-    , [ className =? w --> viewShift "term" | w <- termShiftC ]
-    , [ className =? w --> doFloat | w <- floatsC ]
-    , [ resource  =? w --> doFloat | w <- floatsI ]
-    , [ (className =? (fst w) <&&> resource =? (snd w)) --> doFloat | w <- floatsCI ]
-    , [ isDialog <||> isPopup --> doMasterFloat ]
-    , [ (isFullscreen --> doFullFloat) ]
-    , [ manageDocks ]
-    , [ dropdownTerminal ]
-    ]
-    where
-        doMasterFloat = doCenterFloat <+> (doF shiftMaster)
-        isPopup = stringProperty "WM_WINDOW_ROLE" =? "popup"
-        viewShift = doF . shift
-        -- shift to workspace
-        ffoxShiftC  = [ "Firefox" ]
-        termShiftC  = [ "Vim" ]
-        mediaShiftC = [ "Transmission" ]
-        -- floating classes/instances/both
-        floatsC  = [ "imv", "feh", "dde-polkit-dialog", "Gimp" ]
-        floatsI  = [ "file_progress" ]
-        floatsCI = [ ("Firefox", "Dialog")
-                   , ("Firefox", "Plugin-container")
-                   ]
+  [ [ className =? w --> viewShift "ffox" | w <- ffoxShiftC ]
+  , [ className =? w --> viewShift "term" | w <- termShiftC ]
+  , [ className =? w --> doFloat | w <- floatsC ]
+  , [ resource  =? w --> doFloat | w <- floatsI ]
+  , [ (className =? (fst w) <&&> resource =? (snd w)) --> doFloat | w <- floatsCI ]
+  , [ isDialog <||> isPopup --> doMasterFloat ]
+  , [ (isFullscreen --> doFullFloat) ]
+  , [ manageDocks ]
+  , [ dropdownTerminal ]
+  ]
+
+doMasterFloat = doCenterFloat <+> (doF shiftMaster)
+isPopup = stringProperty "WM_WINDOW_ROLE" =? "popup"
+viewShift = doF . shift
+-- shift to workspace
+ffoxShiftC  = [ "Firefox" ]
+termShiftC  = [ "Vim" ]
+mediaShiftC = [ "Transmission" ]
+-- floating classes/instances/both
+floatsC  = [ "imv", "feh", "dde-polkit-dialog", "Gimp" ]
+floatsI  = [ "file_progress" ]
+floatsCI = [ ("Firefox", "Dialog")
+           , ("Firefox", "Plugin-container")
+           ]
 
 dropdownTerminal :: ManageHook
 dropdownTerminal = scratchpadManageHook $ RationalRect tLeftPC tTopPC tWidthPC tHeightPC
-    where
-        tHeightPC = 0.4
-        tWidthPC  = 0.5
-        tTopPC    = 0.015
-        tLeftPC   = 0.25
+  where
+    tHeightPC = 0.4
+    tWidthPC  = 0.5
+    tTopPC    = 0.015
+    tLeftPC   = 0.25

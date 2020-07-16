@@ -11,19 +11,19 @@ import Layouts (layoutHook')
 import WSRules (manageHook')
 import Utils (startupHook')
 
+opts = def
+  { terminal    = "alacritty"
+  , modMask     = mod4Mask
+  , borderWidth = 0
+  , workspaces  = [ "ffox", "term", "files", "random", "aux", "media" ]
+  , manageHook  = manageHook'
+  , startupHook = startupHook'
+  , layoutHook  = layoutHook'
+  , keys        = keys'
+  }
 
-main = do
-     xmonad
-       . fullscreenSupport
-       . ewmh
-       . docks
-       $ def
-         { terminal    = "alacritty"
-         , modMask     = mod4Mask
-         , borderWidth = 0
-         , workspaces  = [ "ffox", "term", "files", "random", "aux", "media" ]
-         , manageHook  = manageHook'
-         , startupHook = startupHook'
-         , layoutHook  = layoutHook'
-         , keys        = keys'
-         }
+main = xmonad
+  . fullscreenSupport
+  . ewmh
+  . docks
+  $ opts
