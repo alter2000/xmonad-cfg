@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+
+nix-build ./nix/default.nix
+
+[[ -n "$1" ]] && cp ./result/bin/xmonad "$1" || echo "./build: no copy arguments given, leaving in ./result/"
