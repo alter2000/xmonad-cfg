@@ -1,30 +1,31 @@
 { mkDerivation, stdenv
-, base, containers, unix, xmonad, xmonad-contrib
-# , hpack
+, base, async, containers, unix, xmonad, xmonad-contrib, xmonad-extras
 }:
 
 let
   baseDepends = [
     base
+    async
     containers
     unix
     xmonad
     xmonad-contrib
-  ];
+    xmonad-extras
+  ]
+  ;
 in
 mkDerivation {
   pname = "xmonad-cfg";
   version = "0.1.0.0";
-  src = ./..;
+  src = builtins.path { path = ./..; name = "xmonad-cfg"; };
   isLibrary = true;
   isExecutable = true;
 
-  # libraryToolDepends = [ hpack ];
-  libraryHaskellDepends = baseDepends ++ [ ];
+  executableHaskellDepends = baseDepends ++ [
+  ];
 
-  executableHaskellDepends = baseDepends ++ [ ];
-
-  testHaskellDepends = baseDepends ++ [ ];
+  testHaskellDepends = baseDepends ++ [
+  ];
 
   # prePatch = "hpack";
   homepage = "https://github.com/alter2000/xmonad-cfg#readme";
