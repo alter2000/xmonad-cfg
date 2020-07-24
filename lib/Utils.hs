@@ -1,47 +1,65 @@
 module Utils where
 
-import System.Posix.Unistd (nodeName, getSystemID)
+-- import System.Posix.Unistd (nodeName, getSystemID)
+
+import Data.Maybe (maybeToList)
+import Control.Monad (join, when)
 
 import XMonad
+import XMonad.Hooks.SetWMName (setWMName)
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.Run (safeRunInTerm)
--- import XMonad.Actions.Eval (evalExpression, defaultEvalConfig)
+import XMonad.Actions.Eval (evalExpression, defaultEvalConfig)
 import XMonad.Prompt.Input (inputPrompt)
+-- import XMonad.Util.Cursor (setDefaultCursor)
 
-import XMonad.Layout.Tabbed
-
-hostname = fmap nodeName getSystemID
-
+startupHook' :: X ()
 startupHook' = do
-        spawnOnce "xsetroot -xcf $HOME/.icons/Atto-cursor/cursors/default 16"
-        safeRunInTerm "" "calcurse"
-        -- TODO: safeSpawn "mkfifo" or spawnPipe $ "/tmp/.xmonad-workspace-log"
+  -- setDefaultCursor xC_left_ptr
+  spawnOnce "xsetroot -xcf $HOME/.icons/Atto-cursor/cursors/default 16"
+  safeRunInTerm "" "calcurse"
+  -- setFullscreenSupported
+  addEWMHFullscreen
 
-{-
-   polybarHook = do
-     winset <- gets windowset
-     let currWs = W.currentTag winset
-     let wss = map W.tag $ W.workspaces winset
-     let wsStr = join $ map (fmt currWs) $ sort' wss
-     io $ appendFile "/tmp/.xmonad-workspace-log" (wsStr ++ "\n")
-     where fmt currWs ws
-             | currWs == ws = "[" ++ ws ++ "]"
-             | otherwise    = " " ++ ws ++ " "
-           sort' = sortBy (compare `on` (!! 0))
--}
+-- hack to let firefox fullscreen
+setFullscreenSupported :: X ()
+setFullscreenSupported = withDisplay \disp -> do
+  root <- asks theRoot
+  netSupported <- getAtom "_NET_SUPPORTED"
+  atom <- getAtom "ATOM"
+  supp <- mapM getAtom [ "_NET_WM_STATE_HIDDEN"
+                       , "_NET_WM_STATE_FULLSCREEN" -- XXX Copy-pasted to add this line
+                       , "_NET_NUMBER_OF_DESKTOPS"
+                       , "_NET_CLIENT_LIST"
+                       , "_NET_CLIENT_LIST_STACKING"
+                       , "_NET_CURRENT_DESKTOP"
+                       , "_NET_DESKTOP_NAMES"
+                       , "_NET_ACTIVE_WINDOW"
+                       , "_NET_WM_DESKTOP"
+                       , "_NET_WM_STRUT"
+                       ]
+  io . changeProperty32 disp root netSupported atom propModeReplace $ fromIntegral <$> supp
+  setWMName "xmonad"
+
+addEWMHFullscreen :: X ()
+addEWMHFullscreen   = do
+  wms <- getAtom "_NET_WM_STATE"
+  wfs <- getAtom "_NET_WM_STATE_FULLSCREEN"
+  mapM_ addNETSupported [wms, wfs]
+    where
+      addNETSupported :: Atom -> X ()
+      addNETSupported x = withDisplay $ \dpy -> do
+        r               <- asks theRoot
+        a_NET_SUPPORTED <- getAtom "_NET_SUPPORTED"
+        a               <- getAtom "ATOM"
+        liftIO do
+          sup <- (join . maybeToList) <$> getWindowProperty32 dpy a_NET_SUPPORTED r
+          when (fromIntegral x `notElem` sup) $
+            changeProperty32 dpy r a_NET_SUPPORTED a propModeAppend [fromIntegral x]
 
 
-tabLayoutTheme = def
-        { activeColor = "#556064"
-        , inactiveColor = "#2F3D44"
-        , urgentColor = "#FDF6E3"
-        , activeBorderColor = "#454948"
-        , inactiveBorderColor = "#454948"
-        , urgentBorderColor = "#268BD2"
-        , activeTextColor = "#80FFF9"
-        , inactiveTextColor = "#1ABC9C"
-        , urgentTextColor = "#1ABC9C"
-        , fontName = "xft:Hasklig:size=10:antialias=true"
-        }
+hsPrompt :: X ()
+hsPrompt = inputPrompt def "Eval"
+  >>= flip whenJust (evalExpression defaultEvalConfig)
 
--- hsPrompt = inputPrompt def "Eval" >>= flip whenJust (evalExpression defaultEvalConfig)
+-- hostname = nodeName <$> getSystemID

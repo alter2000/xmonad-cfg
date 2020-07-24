@@ -1,39 +1,59 @@
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+{-# LANGUAGE FlexibleContexts #-}
+
 module Layouts (
     layoutHook'
   ) where
 -- TODO: maybe add layouts as <leader> maps?
 
-import XMonad
-import XMonad.StackSet (RationalRect(..))
+import Data.Function ((&))
 
--- import XMonad.Layout.Tabbed
-import XMonad.Layout.NoBorders (noBorders)
-import XMonad.Layout.Fullscreen (fullscreenFull)
-import XMonad.Layout.ResizableTile (ResizableTall(..))
-import XMonad.Layout.WindowArranger (windowArrange)
+import XMonad hiding ((|||))
+import XMonad.Layout.LayoutCombinators
+import XMonad.Layout.LayoutModifier
+import XMonad.Layout.MultiToggle
+import XMonad.Layout.MultiToggle.Instances
 
--- import XMonad.Layout.TwoPane
+import XMonad.Layout.Tabbed
 
-import XMonad.Layout.Gaps
--- import XMonad.Layout.Circle
+import XMonad.Layout.NoBorders --(noBorders, smartBorders)
+import XMonad.Layout.Fullscreen (fullscreenFocus)
+import XMonad.Layout.MouseResizableTile --(ResizableTall(..))
+import XMonad.Layout.WindowNavigation ( configurableNavigation
+                                      , navigateColor
+                                      , navigateBrightness
+                                      , WindowNavigation
+                                      )
+import XMonad.Layout.Renamed
 
--- -- one or the other _villager noises_
 -- import XMonad.Layout.BinarySpacePartition
--- import XMonad.Layout.Dwindle
 
-import XMonad.Hooks.ManageDocks (avoidStruts)
+import XMonad.Hooks.ManageDocks (avoidStruts, AvoidStruts)
 
-import XMonad.Util.NamedScratchpad (NamedScratchpad(..), customFloating)
+import Config
 
-layoutHook' = tilingL ||| fullL
+type Borderer = (ConfigurableBorder Ambiguity)
+baseMovement :: (LayoutModifier Borderer Window, LayoutClass l Window)
+             => l Window ->
+  (ModifiedLayout WindowNavigation
+  (ModifiedLayout Borderer
+  (ModifiedLayout AvoidStruts l))) Window
+baseMovement = (configurableNavigation $ navigateBrightness 0.5)
+            . lessBorders (Combine Difference Screen OnlyLayoutFloat)
+            . avoidStruts
 
-tilingL = windowArrange ( gaps [(U, 22), (R, 0), (L, 0), (D, 0)] $
-                          avoidStruts $
-                          ResizableTall 1 (5/100) (2/5) [])
+layoutHook' =
+  mkToggle (MIRROR ?? FULL ?? EOT) $
+      renamed [Replace "Tall"] tiling
+  -- ||| renamed [Replace "Fullscreen"] full
 
-fullL = noBorders $ fullscreenFull Full
+tiling =
+  (mouseResizableTile @Window)
+    { nmaster = 1
+    , fracIncrement = (5/100)
+    , masterFrac = (2/5)
+    , draggerType = BordersDragger
+    }
+  & baseMovement
 
-scratchpads = [
-    NS "gvim" "gvim" (className =? "Gvim")
-        (customFloating $ RationalRect (1/3) (4/5) (1/3) (1/3))
-  ]
+full = noBorders $ fullscreenFocus Full
